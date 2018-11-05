@@ -2,6 +2,25 @@ const express = require("express")
 const router = express.Router();
 const User = require("../models/user")
 
+router.post("/register", async(req, res)=>{
+    try{
+        const theUser = await User.create({
+            username: req.body.username,
+            password: req.body.password
+
+        })
+        req.session.usersId = theUser._id;
+        req.session.username = theUser.username;
+        req.session.password = theUser.password;
+        res.json({
+             name: req.session.username,
+             status: 200
+        })
+    }
+    catch(err){
+        console.log(err)
+    }
+})
 
 router.post("/login", async(req, res) => {
     try {
@@ -10,9 +29,9 @@ router.post("/login", async(req, res) => {
         req.session.logged = true;
         req.session.username = req.body.username;
         res.json({
-            'status': '200',
-            'name': req.session.username,
-            'data': 'login successful'
+            status: 200,
+            name: req.session.username,
+            data: 'login successful'
         });
     } catch (err) {
         console.log(err);
@@ -20,19 +39,6 @@ router.post("/login", async(req, res) => {
     }
     })
     
-router.post("/register", (req, res)=>{
-    })
-
-router.put("/:id", (req, res) => {
-
-
-    res.json({
-        body: somethingElse
-    })
-})
-
-
-
 
 // Update route for liked beers
 router.put('/isLiked', async (req, res) => {
@@ -88,7 +94,25 @@ router.put('/isDisliked', async (req, res) => {
 
 
 
-// Delete route
+
+// Delete route for to Try
+router.delete('/:id/isLiked', async(req, res) => {
+    try {
+        const deletedBeer = await User.findByIdAndUpdate(res.session.id, 
+            {$pull:{
+                isLiked: req.body.name
+                
+        }}, {new: true})
+        res.json({
+            status: 200,
+            data: deletedBeer
+        })
+    } catch(err) {
+        res.send(err)
+    }
+})
+
+// Delete route for to Try
 router.delete('/:id/toTry', async(req, res) => {
     try {
         const deletedBeer = await User.findByIdAndUpdate(res.session.id, 
@@ -105,13 +129,22 @@ router.delete('/:id/toTry', async(req, res) => {
     }
 })
 
-
-
-
-
-
-
-
+// Delete route for to Try
+router.delete('/:id/isDisliked', async(req, res) => {
+    try {
+        const deletedBeer = await User.findByIdAndUpdate(res.session.id, 
+            {$pull:{
+                isDisliked: req.body.name
+                
+        }}, {new: true})
+        res.json({
+            status: 200,
+            data: deletedBeer
+        })
+    } catch(err) {
+        res.send(err)
+    }
+})
 
 
 
