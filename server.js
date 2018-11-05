@@ -19,7 +19,8 @@ app.use(methodOverride("_method"));
 
 app.get("/api/v1", (req, res)=>{
     res.json({
-        "message": "welcome to the homepage this is where the stuff happens"
+        "message": "welcome to the homepage this is where the stuff happens",
+        "status": 200
     })
 })
 
