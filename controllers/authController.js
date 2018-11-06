@@ -1,20 +1,39 @@
 const express = require("express")
 const router = express.Router();
 const User = require("../models/user")
+const fetch = require('node-fetch')
 
-router.post("/register", async(req, res)=>{
-    try{
-        const theUser = await User.create({
-            username: req.body.username,
-            password: req.body.password
+const getBeers = async() => {
+    const beersJson = await fetch("https://sandbox-api.brewerydb.com/v2/beers?key=7d2b7088dd751a4d391faa03edcb0118")
+    const beers = await beersJson.json()
+    return beers
+}
 
+
+router.get("/", (req, res)=>{
+        getBeers().then(beers => {
+            res.json({
+                data: beers,
+                status: 200
+            })
+            // console.log(data[0], 'this is data')
+        }).catch(error => {
+            console.log(error)
+            res.send(error)
         })
-        req.session.usersId = theUser._id;
-        req.session.username = theUser.username;
-        req.session.password = theUser.password;
-        res.json({
-             name: req.session.username,
-             status: 200
+})
+
+router.get("/logout", async (req, res)=>{
+    try{
+        await req.session.destroy((err)=>{
+            if(err){
+                console.log(err)
+            }
+            else{
+                res.json({
+                    message: "logged out"
+                })
+            }
         })
     }
     catch(err){
@@ -22,17 +41,48 @@ router.post("/register", async(req, res)=>{
     }
 })
 
+router.post("/register", async(req, res)=>{
+    //console.log(req.body, 'req.body')
+    try{
+        const theUser = await User.create({
+            username: req.body.username,
+            password: req.body.password
+
+        })
+       
+        req.session.usersId = theUser._id;
+        req.session.username = theUser.username;
+        req.session.password = theUser.password;
+        
+        res.json({
+            name: req.session.username,
+            status: 200,
+            data: 'login successful'             
+        });
+        console.log(req.session, 'session')
+    }
+    catch(err){
+        console.log(err);
+        res.json(err);
+    };
+});
+
 router.post("/login", async(req, res) => {
     try {
-        const user = await User.create(req.body);
-
-        req.session.logged = true;
-        req.session.username = req.body.username;
-        res.json({
+        const user = await User.findOne({username:req.body.username});
+        if(user.password === req.body.password){
+          req.session.logged = true;
+          req.session.username = req.body.username;
+          res.json({
             status: 200,
             name: req.session.username,
             data: 'login successful'
         });
+        }else{
+            res.json({
+                status: 404
+            });
+        }
     } catch (err) {
         console.log(err);
         res.send(err);
