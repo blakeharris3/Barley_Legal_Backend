@@ -56,7 +56,7 @@ router.post("/register", async(req, res)=>{
         
         res.json({
             status: 200,
-            data: 'login successful',
+            data: 'register successful',
             userId: user._id             
         });
     }
@@ -71,16 +71,16 @@ router.post("/login", async(req, res) => {
         const user = await User.findOne({username:req.body.username});
         if(user.password === req.body.password){
           req.session.logged = true;
-          req.session.userId = user._id 
+          req.session.userId = user._id;
           req.session.username = req.body.username;
           res.json({
-            status: req.session.logged,
             name: req.session.username,
-            data: 'login successful'
+            data: 'login successful',
+            userId: user._id     
         });
         }else{
             res.json({
-                status: false
+                logged: false
 
             });
         }
@@ -110,7 +110,7 @@ router.put('/isLiked', async (req, res) => {
 // Update router for beer to try
 router.put('/toTry', async (req, res) => {
     try {
-        const beerToTry = await User.findByIdAndUpdate(req.session.id, {
+        const beerToTry = await User.findByIdAndUpdate(req.body.userId, {
             $push: {
             toTry: req.body.name
             }
@@ -129,10 +129,12 @@ router.put('/toTry', async (req, res) => {
 //Update router for beer disliked
 router.put('/isDisliked', async (req, res) => {
     try {
-        const dislikedBeer = await User.findByIdAndUpdate(req.session.id, 
-            {$push:{
+        const dislikedBeer = await User.findByIdAndUpdate(req.body.userId, {
+            $push: {
             isDisliked: req.body.name
-        }}, {new: true})
+            }
+        }, 
+        {new: true})
 
         res.json({
             status: 200,
@@ -143,14 +145,10 @@ router.put('/isDisliked', async (req, res) => {
     }
 })
 
-
-
-
-
 // Delete route for to Try
 router.delete('/:id/isLiked', async(req, res) => {
     try {
-        const deletedBeer = await User.findByIdAndUpdate(res.session.id, 
+        const deletedBeer = await User.findByIdAndUpdate(req.body.userId, 
             {$pull:{
                 isLiked: req.body.name
                 
@@ -167,7 +165,7 @@ router.delete('/:id/isLiked', async(req, res) => {
 // Delete route for to Try
 router.delete('/:id/toTry', async(req, res) => {
     try {
-        const deletedBeer = await User.findByIdAndUpdate(res.session.id, 
+        const deletedBeer = await User.findByIdAndUpdate(req.body.userId, 
             {$pull:{
                 toTry: req.body.name
                 
@@ -184,7 +182,7 @@ router.delete('/:id/toTry', async(req, res) => {
 // Delete route for to Try
 router.delete('/:id/isDisliked', async(req, res) => {
     try {
-        const deletedBeer = await User.findByIdAndUpdate(res.session.id, 
+        const deletedBeer = await User.findByIdAndUpdate(req.body.userId, 
             {$pull:{
                 isDisliked: req.body.name
                 
