@@ -11,7 +11,7 @@ require("./db/db");
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000/');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -29,20 +29,19 @@ app.use(function (req, res, next) {
 
 
 
-const corsOptions = {
-    origin: 'http://localhost:3000/',
-    credentials: true,
-    optionsSuccessStatus: 200,
-};
+// const corsOptions = {
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+//     optionsSuccessStatus: 200,
+// };
 
-app.use(cors());
+// app.use(cors(corsOptions));
 
 const authController = require("./controllers/authController");
 app.use(expressSession({
     secret: "keyboard cat",
     resave: false,
-    saveUninitialized: true,
-    cookie: {secure: true}
+    saveUninitialized: false
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));

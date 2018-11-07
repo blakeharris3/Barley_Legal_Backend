@@ -44,22 +44,21 @@ router.get("/logout", async (req, res)=>{
 router.post("/register", async(req, res)=>{
     //console.log(req.body, 'req.body')
     try{
-        const theUser = await User.create({
+        const user = await User.create({
             username: req.body.username,
             password: req.body.password
 
         })
        
-        req.session.usersId = theUser._id;
-        req.session.username = theUser.username;
-        req.session.password = theUser.password;
+        req.session.userId = user._id;
+        req.session.username = user.username;
+        req.session.password = user.password;
         
         res.json({
-            name: req.session.username,
             status: 200,
-            data: 'login successful'             
+            data: 'login successful',
+            userId: user._id             
         });
-        console.log(req.session, 'session')
     }
     catch(err){
         console.log(err);
@@ -72,15 +71,17 @@ router.post("/login", async(req, res) => {
         const user = await User.findOne({username:req.body.username});
         if(user.password === req.body.password){
           req.session.logged = true;
+          req.session.userId = user._id 
           req.session.username = req.body.username;
           res.json({
-            status: 200,
+            status: req.session.logged,
             name: req.session.username,
             data: 'login successful'
         });
         }else{
             res.json({
-                status: 404
+                status: false
+
             });
         }
     } catch (err) {
@@ -93,9 +94,10 @@ router.post("/login", async(req, res) => {
 // Update route for liked beers
 router.put('/isLiked', async (req, res) => {
     try {
-        const addedLikedBeer = await User.findByIdAndUpdate(req.session.id, {$push:{
+        const addedLikedBeer = await User.findByIdAndUpdate(req.body.userId, {$push:{
             isLiked: req.body.name
         }}, {new: true})
+        
         res.json({
             status: 200,
             data: addedLikedBeer
