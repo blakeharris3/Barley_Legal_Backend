@@ -1,17 +1,16 @@
 const express = require("express");
 const methodOverride = require("method-override");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const expressSession = require('express-session')
 const app = express();
-const port = 9000;
+const port = process.env.PORT || 9000;
 require("./db/db");
 
 
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'https://barley-legal.netlify.com');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -26,16 +25,6 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-
-
-
-// const corsOptions = {
-//     origin: 'http://localhost:3000',
-//     credentials: true,
-//     optionsSuccessStatus: 200,
-// };
-
-// app.use(cors(corsOptions));
 
 const authController = require("./controllers/authController");
 app.use(expressSession({
