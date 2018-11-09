@@ -16,7 +16,6 @@ router.get("/", (req, res)=>{
                 data: beers,
                 status: 200
             })
-            // console.log(data[0], 'this is data')
         }).catch(error => {
             console.log(error)
             res.send(error)
@@ -30,7 +29,6 @@ router.get("/logout", async (req, res)=>{
                 console.log(err)
             }
             else{
-                console.log("destroyed")
                 res.json({
                     message: "logged out"
                 })
@@ -43,7 +41,6 @@ router.get("/logout", async (req, res)=>{
 })
 
 router.post("/register", async(req, res)=>{
-    console.log(req.body, 'req.body')
     try{
         const user = await User.create({
             username: req.body.username,
@@ -69,9 +66,7 @@ router.post("/register", async(req, res)=>{
 
 router.post("/login", async(req, res) => {
     try {
-        console.log(req.body)
         const user = await User.findOne({username:req.body.username});
-        console.log(user, "this is all of the user")
         if(user.password === req.body.password){
           req.session.logged = true;
           req.session.userId = user._id;
@@ -83,7 +78,6 @@ router.post("/login", async(req, res) => {
             userId: user._id     
             });
         }else{
-            console.log("this is happening on line 83")
             res.json({
                 logged: false
 
