@@ -17,8 +17,15 @@ router.get("/", (req, res)=>{
                 status: 200
             })
         }).catch(error => {
-            console.log(error)
+            console.log(error) // It's best to remove console logs from production level code
             res.send(error)
+            /* For production level code, you typically never want to send the error to the
+                client as there is private information included in your errors you never want
+                to share. Especially if your user has malicious intent.
+
+                In a situation like this, it would be a best practice to send a message instead
+                ex... res.json({"response": 500, "message": "something went wrong, please try again later"})
+             */
         })
 })
 
@@ -26,7 +33,7 @@ router.get("/logout", async (req, res)=>{
     try{
         await req.session.destroy((err)=>{
             if(err){
-                console.log(err)
+                console.log(err) // It's best to remove console logs from production level code
             }
             else{
                 res.json({
@@ -36,7 +43,8 @@ router.get("/logout", async (req, res)=>{
         })
     }
     catch(err){
-        console.log(err)
+        console.log(err) // It's best to remove console logs from production level code
+        // make sure a response is sent back if an error occurs...see line 22
     }
 })
 
@@ -59,8 +67,8 @@ router.post("/register", async(req, res)=>{
         });
     }
     catch(err){
-        console.log(err);
-        res.json(err);
+        console.log(err); // It's best to remove console logs from production level code
+        res.json(err); // see line 22 for feedback on this error handling
     };
 });
 
@@ -84,8 +92,8 @@ router.post("/login", async(req, res) => {
             });
         }
     } catch (err) {
-        console.log(err);
-        res.send(err);
+        console.log(err); // It's best to remove console logs from production level code
+        res.send(err); // see line 22 for feedback on this error handling
     }
     })
     
@@ -102,7 +110,7 @@ router.put('/isLiked', async (req, res) => {
             data: addedLikedBeer
         });
     } catch(err) {
-        res.send(err)
+        res.send(err) // see line 22 for feedback on this error handling
     }
 })
 
@@ -121,7 +129,7 @@ router.put('/toTry', async (req, res) => {
             data: beerToTry
         });
     } catch (err) {
-        res.send(err)
+        res.send(err) // see line 22 for feedback on this error handling
     }
 })
 
@@ -140,7 +148,7 @@ router.put('/isDisliked', async (req, res) => {
             data: req.body.name
         });
     } catch(err) {
-        res.send(err)
+        res.send(err) // see line 22 for feedback on this error handling
     }
 })
 
@@ -161,7 +169,7 @@ router.delete('/toTry', async(req, res) => {
             data: deletedBeer.toTry
         })
     } catch(err) {
-        res.send(err)
+        res.send(err) // see line 22 for feedback on this error handling
     }
 })
 
