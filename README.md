@@ -2,6 +2,7 @@
 - The backend half to Barley Legal
 - Get a list of beers and see which ones you have tried and liked, tried and disliked,and ones you are interested in trying.
 
+<!-- Make sure your wireframes are included in your project's README -->
 - By:
   - Blake Harris   
   - Avery-Dante Hinds
@@ -20,6 +21,14 @@
 - Express
 
 ## API Endpoints
+
+<!-- 
+For this section below we also needed to see the urls to each endpoint
+
+For example: GET - '/beers'     This endpoint will display all the beers
+             GET - '/beers/:id  This endpoint will display one beetr with an id of 1
+
+ -->
 
 ### Get
 - This will grab a beer form the object and display it on the page with the according buttons
@@ -42,3 +51,8 @@
 
 ## Struggles
 - Sending API data to our database
+
+<!-- 
+Make sure you update this section once you're done with your project to
+highlight some areas you struggled with during the project workflow.
+ -->
